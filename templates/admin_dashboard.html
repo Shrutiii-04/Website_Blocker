@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+           background:radial-gradient(circle, #f5f7f8, #aff1dd, #8af0db);
+            color: #000;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        h1, h3 {
+            text-align: center;
+        }
+        .message {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .message:last-child {
+            border-bottom: none;
+        }
+        .message:hover {
+            background-color: #f0f0f0;
+        }
+        .message strong {
+            color: #333;
+        }
+        .timestamp {
+            color: #888;
+            font-size: 0.9em;
+        }
+        .logout-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #007bff;
+            color: #fff;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        .logout-button:hover {
+            background: #0056b3;
+        }
+        .search-bar {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .search-bar input {
+            width: 60%;
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            transition: opacity 0.3s, transform 0.3s;
+            opacity: 0;
+        }
+        .modal.show {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h2 {
+            margin: 0;
+        }
+        .modal-close {
+            cursor: pointer;
+            font-size: 1.5em;
+        }
+        .modal-content {
+            margin-top: 20px;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 500;
+            transition: opacity 0.3s;
+            opacity: 0;
+        }
+        .overlay.show {
+            display: block;
+            opacity: 1;
+        }
+        header {
+            background-color:#0c5776;; 
+            color: #fff; 
+            padding: 20px;
+            position: relative;
+            box-align: center;
+        }
+
+        .admin-header {
+            font-size: 40px;
+            display: flex;
+            align-items: center;
+        }
+
+        .admin-icon {
+            width: 60px; 
+            height: 60px; 
+            border-radius: 50%; 
+            overflow: hidden;
+            margin-left: auto;
+            cursor: pointer;
+        }
+
+        .admin-icon img {
+            width: 100%; 
+            height: 100%;
+            object-fit: cover; 
+        }
+        .admin-dropdown {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background-color: #fff; 
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1;
+        }
+
+        .admin-dropdown a {
+            display: block;
+            padding: 10px;
+            color: #333;  
+            text-decoration: none;
+        }
+
+        .admin-dropdown a:hover {
+            background-color: #f0f0f0; 
+        }
+
+        .admin-dropdown.show {
+            display: block;
+        }
+        .sub-header {
+            background-color: #2d99ae;
+            padding: 10px;
+            text-align: right;
+            font-size: 17px;
+            padding-right: 40px;
+        }
+
+        .sub-header a {
+            color: #fff;  
+            text-decoration: none;
+        }
+
+        .sub-header a:hover {
+            text-decoration: underline;  
+        }
+    </style>
+    
+</head>
+<body>
+    <header>
+        <div class="admin-header">
+            <span>Welcome, Admin!</span>
+            <div class="admin-icon" onclick="toggleDropdown()"><img src="{{ url_for('static', filename='images/user_icon.png') }}" alt="Admin Icon"></div>
+        </div>
+        <div class="admin-dropdown" id="adminDropdown">
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </header>
+    <div class="sub-header">
+        <a href="{{ url_for('add_website') }}">Home</a>
+ </div>
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+        <div class="search-bar">
+            <input type="text" id="searchInput" onkeyup="searchMessages()" placeholder="Search messages...">
+        </div>
+        <h3>Messages Display Section</h3>
+        {% for sender, content, timestamp in messages %}
+            <div class="message">
+                <p><strong>From: {{ sender }}</strong> - {{ content }} <span class="timestamp">{{ timestamp }}</span></p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Modal for message details -->
+    <div class="modal" id="messageModal">
+        <div class="modal-header">
+            <h2>Message Details</h2>
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+        </div>
+        <div class="modal-content" id="modalContent"></div>
+    </div>
+    <div class="overlay" id="overlay" onclick="closeModal()"></div>
+    <script>
+        function toggleDropdown() {
+            var dropdown = document.getElementById("adminDropdown");
+            dropdown.classList.toggle("show");
+        }
+        function confirmLogout(event) {
+        if (!confirm('Are you sure you want to logout?')) {
+            event.preventDefault();
+        }
+    }
+
+    function searchMessages() {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        const messages = document.getElementsByClassName('message');
+        for (let i = 0; i < messages.length; i++) {
+            const message = messages[i];
+            const text = message.innerText.toLowerCase();
+            message.style.display = text.includes(input) ? '' : 'none';
+        }
+    }
+
+    function showModal(messageContent) {
+        const modal = document.getElementById('messageModal');
+        const overlay = document.getElementById('overlay');
+        document.getElementById('modalContent').innerText = messageContent;
+        modal.classList.add('show');
+        overlay.classList.add('show');
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('messageModal');
+        const overlay = document.getElementById('overlay');
+        modal.classList.remove('show');
+        overlay.classList.remove('show');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const messages = document.getElementsByClassName('message');
+        for (let i = 0; i < messages.length; i++) {
+            messages[i].addEventListener('click', function() {
+                showModal(this.innerText);
+            });
+        }
+    });
+    </script>
+</body>
+</html>

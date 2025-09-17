@@ -1,0 +1,48 @@
+<!-- add_websites.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Websites</title>
+</head>
+<body>
+    <h2>Add Websites</h2>
+    {% if success %}
+    <p>{{ success }}</p>
+    {% endif %}
+    <form method="POST">
+        <label for="websites">Websites (comma-separated):</label>
+        <input type="text" id="websites" name="websites" required><br><br>
+        <label for="action">Action:</label>
+        <select id="action" name="action">
+            <option value="block">Block</option>
+            <option value="unblock">Unblock</option>
+        </select><br><br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- New form for setting working hours -->
+    <h2>Set Working Hours</h2>
+    <form method="POST" action="/add_websites">
+        <label for="start_hour">Start Hour:</label>
+        <input type="number" id="start_hour" name="start_hour" min="0" max="23" required>
+        <label for="start_minute">Start Minute:</label>
+        <input type="number" id="start_minute" name="start_minute" min="0" max="59" required><br><br>
+        <label for="end_hour">End Hour:</label>
+        <input type="number" id="end_hour" name="end_hour" min="0" max="23" required>
+        <label for="end_minute">End Minute:</label>
+        <input type="number" id="end_minute" name="end_minute" min="0" max="59" required><br><br>
+        <label for="lunch_start_hour">Lunch Start Hour:</label>
+        <input type="number" id="lunch_start_hour" name="lunch_start_hour" min="0" max="23" required>
+        <label for="lunch_start_minute">Lunch Start Minute:</label>
+        <input type="number" id="lunch_start_minute" name="lunch_start_minute" min="0" max="59" required><br><br>
+        <label for="lunch_end_hour">Lunch End Hour:</label>
+        <input type="number" id="lunch_end_hour" name="lunch_end_hour" min="0" max="23" required>
+        <label for="lunch_end_minute">Lunch End Minute:</label>
+        <input type="number" id="lunch_end_minute" name="lunch_end_minute" min="0" max="59" required><br><br>
+        <button type="submit">Set Working Hours</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!-- blocked_websites_info.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blocked Websites Information</title>
+</head>
+<body>
+    <h1>Blocked Websites Information</h1>
+    
+    {% if blocked_websites_info %}
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Websites</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user, websites, start_time, end_time in blocked_websites_info %}
+                    <tr>
+                        <td>{{ user }}</td>
+                        <td>
+                            <ul>
+                                {% for website in websites %}
+                                    <li>{{ website }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>{{ start_time }}</td>
+                        <td>{{ end_time }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No blocked websites information available.</p>
+    {% endif %}
+    
+    <a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
+    
+</body>
+</html>
+
+
+
+
+
+<script>
+    function confirmLogout(event) {
+        if (!confirm('Are you sure you want to logout?')) {
+            event.preventDefault();
+        }
+    }
+
+    function searchMessages() {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        const messages = document.getElementsByClassName('message');
+        for (let i = 0; i < messages.length; i++) {
+            const message = messages[i];
+            const text = message.innerText.toLowerCase();
+            message.style.display = text.includes(input) ? '' : 'none';
+        }
+    }
+
+    function showModal(messageContent) {
+        const modal = document.getElementById('messageModal');
+        const overlay = document.getElementById('overlay');
+        document.getElementById('modalContent').innerText = messageContent;
+        modal.classList.add('show');
+        overlay.classList.add('show');
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('messageModal');
+        const overlay = document.getElementById('overlay');
+        modal.classList.remove('show');
+        overlay.classList.remove('show');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const messages = document.getElementsByClassName('message');
+        for (let i = 0; i < messages.length; i++) {
+            messages[i].addEventListener('click', function() {
+                showModal(this.innerText);
+            });
+        }
+    });
+</script>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+         body {
+            font-family: 'Arial', sans-serif;
+            background:radial-gradient(circle, #f5f7f8, #aff1dd, #8af0db);
+            margin: 0;
+            padding: 18px; 
+            display: flex;
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+        }
+        .container {
+            width: 900px; 
+            background: #ffffff;  
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            border-radius: 50px 20px; 
+            position: relative;
+            height: 500px;
+        }
+        h1, h2 {
+            color: #343a40;  
+        }
+        .user-profile {
+            position: absolute;
+            top: 30px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .user-profile img {
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            margin-right: 20px;
+        }
+        .dropdown {
+            position: absolute;
+            top: 70px;
+            right: 20px;
+            background-color: #ffffff;  
+            border: 1px solid #ccc;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            display: none;
+            z-index: 1;
+        }
+        .dropdown a {
+            color: #343a40;  
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            border-bottom: 1px solid #ddd;
+        }
+        .dropdown a:last-child {
+            border-bottom: none;
+        }
+        .dropdown a:hover {
+            background-color: #f8f9fa; 
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 70px;  
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 12px;
+        }
+        th {
+            background-color: #007bff; 
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            font-weight: bold;
+            color: #343a40;  
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="submit"] {
+            background-color: #007bff; 
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+            transition: text-decoration 0.3s ease;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: #343a40;
+            color: #fff; 
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; 
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="user-profile" id="userProfile">
+            <img src="{{ url_for('static', filename='images/user_icon.png') }}" alt="User Profile">
+            <div class="dropdown" id="dropdownMenu">
+                <a href="{{ url_for('user_logout') }}">Logout</a>
+            </div>
+        </div>
+
+        <h1>Welcome, {{ username }}</h1>
+        <h2>Blocked Websites:</h2>
+        <table>
+            <tr>
+                <th>Website </th>
+                <th>Start Time</th>
+                <th>End Time</th>
+            </tr>
+            {% for website, start_time, end_time in blocked_websites %}
+            <tr>
+                <td>{{ website }}</td>
+                <td>{{ start_time }}</td>
+                <td>{{ end_time }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        
+        <form action="" method="POST">
+            <label for="message">Enter Message:</label><br>
+            <input type="text" id="message" name="message" placeholder="Type your message here..."><br><br>
+            <input type="submit" value="Send Message">
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("userProfile").addEventListener("click", function() {
+            var dropdown = document.getElementById("dropdownMenu");
+            if (dropdown.style.display === "block") {
+                dropdown.style.display = "none";
+            } else {
+                dropdown.style.display = "block";
+            }
+        });
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.user-profile, .user-profile *')) {
+                var dropdown = document.getElementById("dropdownMenu");
+                if (dropdown.style.display === "block") {
+                    dropdown.style.display = "none";
+                }
+
+            }
+        }
+    </script>
+</body>
+</html>

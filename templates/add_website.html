@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Website</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+           background:radial-gradient(circle, #f5f7f8, #aff1dd, #8af0db);
+        }
+
+        header {
+            background-color:#0c5776;; 
+            color: #fff; 
+            padding: 20px;
+            position: relative;
+            box-align: center;
+        }
+
+        .admin-header {
+            font-size: 40px;
+            display: flex;
+            align-items: center;
+        }
+
+        .admin-icon {
+            width: 60px; 
+            height: 60px;
+            border-radius: 50%; 
+            overflow: hidden; 
+            margin-left: auto;
+            cursor: pointer;
+        }
+
+        .admin-icon img {
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+        }
+
+        .admin-dropdown {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background-color: #fff; 
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1;
+        }
+
+        .admin-dropdown a {
+            display: block;
+            padding: 10px;
+            color: #333; 
+            text-decoration: none;
+        }
+
+        .admin-dropdown a:hover {
+            background-color: #f0f0f0; 
+        }
+
+        .admin-dropdown.show {
+            display: block;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: calc(100vh - 160px); 
+            margin-top: 30px; 
+        }
+
+        .sub-header {
+            background-color: #2d99ae;
+            padding: 10px;
+            text-align: right;
+            font-size: 17px;
+            padding-right: 40px;
+        }
+
+        .sub-header a {
+            color: #fff; 
+            text-decoration: none;
+        }
+
+        .sub-header a:hover {
+            text-decoration: underline; 
+        }
+
+        .form-container {
+            background-color: #fff; 
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 400px;
+        }
+
+        h2 {
+            color: #333;
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        select,
+        input[type="time"],
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        select:focus,
+        input[type="time"]:focus {
+            border-color: #0a9396;
+            outline: none;
+        }
+
+        button {
+            background-color: #4CAF50; 
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #007f7a;
+        }
+        .error-message {
+            color: red;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="admin-header">
+            <span>Welcome, Admin!</span>
+            <div class="admin-icon" onclick="toggleDropdown()"><img src="{{ url_for('static', filename='images/user_icon.png') }}" alt="Admin Icon"></div>
+        </div>
+        <div class="admin-dropdown" id="adminDropdown">
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </header>
+    <div class="sub-header">
+        <a href="{{ url_for('admin_dashboard') }}">Notifications</a>
+ </div>
+    <div class="container">
+        <div class="form-container">
+            <h2 align="center">Add Website</h2>
+		{% if success %}
+    <p class="error-message">{{ success }}</p>
+    {% endif %}
+            <form id="websiteForm" action="{{ url_for('add_website') }}" method="POST">
+                <label for="username">Username:</label>
+                <select name="username" id="username">
+                    <option value="all">All Users</option>
+                    {% if users %}
+                        {% for username, user in users.items() %}
+                            <option value="{{ username }}">{{ username }}</option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+                <label for="action">Action:</label>
+                <select id="action" name="action" required>
+                    <option value="block">Block</option>
+                    <option value="unblock">Unblock</option>
+                </select>
+                <label for="websites">Websites:</label>
+                <input type="text" id="websites" name="websites" required>
+                <label for="start_time">Start Time:</label>
+                <input type="time" id="start_time" name="start_time" required>
+                <label for="end_time">End Time:</label>
+                <input type="time" id="end_time" name="end_time" required>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleDropdown() {
+            var dropdown = document.getElementById("adminDropdown");
+            dropdown.classList.toggle("show");
+        }
+    </script>
+</body>
+</html>
